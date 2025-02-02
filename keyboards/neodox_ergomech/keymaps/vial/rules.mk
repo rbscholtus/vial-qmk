@@ -10,6 +10,7 @@ WPM_ENABLE = yes
 OS_DETECTION_ENABLE = no
 OCEAN_DREAM_ENABLE = yes
 PERMISSIVE_HOLD = yes  # does not work on Vial UI
+KEYBOARD_SHARED_EP = yes
 
 # https://github.com/snowe2010/qmk_firmware/blob/ocean-dream/users/snowe/readme_ocean_dream.md
 ifeq ($(strip $(OLED_ENABLE)), yes)

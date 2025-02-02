@@ -35,6 +35,7 @@ enum custom_keycodes {
     CMD_X,
     CMD_C,
     CMD_V,
+    KC_GLOBE
 };
 
 void install_combo_entries(void) {
@@ -65,6 +66,9 @@ void install_tap_dance_entries(void) {
     vial_tap_dance_entry_t td5 = {KC_M, CMD_C, KC_NO, KC_NO, TAPPING_TERM};
     vial_tap_dance_entry_t td6 = {KC_D, CMD_V, KC_NO, KC_NO, TAPPING_TERM};
 
+    // add Apple Globe key
+    vial_tap_dance_entry_t td7 = {KC_TAB, KC_GLOBE, KC_NO, KC_NO, 150}; // hold=Globe, tap=TAB
+
     dynamic_keymap_set_tap_dance(0, &td0);
     dynamic_keymap_set_tap_dance(1, &td1);
     dynamic_keymap_set_tap_dance(2, &td2);
@@ -72,9 +76,16 @@ void install_tap_dance_entries(void) {
     dynamic_keymap_set_tap_dance(4, &td4);
     dynamic_keymap_set_tap_dance(5, &td5);
     dynamic_keymap_set_tap_dance(6, &td6);
+    dynamic_keymap_set_tap_dance(7, &td7);
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+        case KC_GLOBE:
+            host_consumer_send(record->event.pressed ? AC_NEXT_KEYBOARD_LAYOUT_SELECT : 0);
+            return false;
+    }
+
 #ifdef OCEAN_DREAM_ENABLE
     // Handle Ocean Dream animation
     switch (keycode) {
@@ -129,7 +140,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      KC_ESC  ,KC_Q    ,KC_W    ,KC_E    ,KC_R    ,KC_T    ,USER_00 ,                          KC_MPLY ,KC_Y    ,KC_U    ,KC_I    ,KC_O    ,KC_P    ,KC_BSLS ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TAB  ,KC_A    ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,XXXXXXX ,                          KC_MUTE ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,KC_QUOT ,
+     TD_GLB_TB,KC_A   ,KC_S    ,KC_D    ,KC_F    ,KC_G    ,XXXXXXX ,                          KC_MUTE ,KC_H    ,KC_J    ,KC_K    ,KC_L    ,KC_SCLN ,KC_QUOT ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_CTL_LP,KC_Z   ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
@@ -157,7 +168,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                          _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                          _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
+     KC_TAB  ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,                          _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,_______,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
@@ -171,7 +182,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______ ,KC_V    ,KC_L    ,KC_H    ,KC_G    ,KC_K    ,_______ ,                          _______ ,KC_Q    ,KC_F 	,KC_O    ,KC_U    ,KC_J    ,KC_BSLS ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______ ,TD_S_CA ,KC_R    ,KC_N    ,KC_T    ,KC_B    ,_______ ,                          _______ ,KC_Y    ,KC_C 	,KC_A    ,KC_E    ,KC_I    ,KC_SLSH ,
+     KC_TAB  ,TD_S_CA ,KC_R    ,KC_N    ,KC_T    ,KC_B    ,_______ ,                          _______ ,KC_Y    ,KC_C 	,KC_A    ,KC_E    ,KC_I    ,KC_SLSH ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,TD_Z_CZ,TD_X_CX ,TD_M_CC ,TD_D_CV ,KC_P    ,_______ ,_______ ,        _______ ,_______ ,KC_QUOT ,KC_W 	,KC_DOT  ,KC_SCLN ,KC_COMM ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤

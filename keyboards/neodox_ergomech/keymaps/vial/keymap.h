@@ -8,6 +8,7 @@
 #define TD_X_CX TD(4)
 #define TD_M_CC TD(5)
 #define TD_D_CV TD(6)
+#define TD_GLB_TB TD(7)
 
 // mod tap and layer tap defines for readability
 #define MT_ALT_ENT LALT_T(KC_ENT)
