@@ -3,12 +3,17 @@
 // tap dance defines for readability
 #define TD_CTL_LP TD(0)
 #define TD_GUI_LP TD(1)
-#define TD_S_CA TD(2)
-#define TD_Z_CZ TD(3)
-#define TD_X_CX TD(4)
-#define TD_M_CC TD(5)
-#define TD_D_CV TD(6)
-#define TD_GLB_TB TD(7)
+#define TD_GLB_TB TD(2)
+#define TD_S_CA TD(3)
+#define TD_Z_CZ TD(4)
+#define TD_X_CX TD(5)
+#define TD_M_CC TD(6)
+#define TD_D_CV TD(7)
+#define TD_S_CLA TD(8)
+#define TD_Z_CLZ TD(9)
+#define TD_X_CLX TD(10)
+#define TD_M_CLC TD(11)
+#define TD_D_CLV TD(12)
 
 // mod tap and layer tap defines for readability
 #define MT_ALT_ENT LALT_T(KC_ENT)

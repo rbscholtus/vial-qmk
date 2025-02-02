@@ -35,6 +35,11 @@ enum custom_keycodes {
     CMD_X,
     CMD_C,
     CMD_V,
+    CTL_A,
+    CTL_Z,
+    CTL_X,
+    CTL_C,
+    CTL_V,
     KC_GLOBE
 };
 
@@ -55,28 +60,40 @@ void install_combo_entries(void) {
 };
 
 void install_tap_dance_entries(void) {
-    // ctl modifier doubles up with (
+    // ctl/cmd modifier doubles up with (
     vial_tap_dance_entry_t td0 = {KC_LPRN, KC_LCTL, KC_NO, KC_NO, 150}; // hold=ctl, tap=( for Mac layers
     vial_tap_dance_entry_t td1 = {KC_LPRN, KC_LGUI, KC_NO, KC_NO, 150}; // hold=gui, tap=( for Win layers
 
+    // Apple Globe key
+    vial_tap_dance_entry_t td7 = {KC_TAB, KC_GLOBE, KC_NO, KC_NO, 150}; // hold=Globe, tap=TAB
+
     // Cmd-A/Z/X/C/V shortcuts, simulated on the same physical postions as qwerty, but for the focal layout
+    // apple
     vial_tap_dance_entry_t td2 = {KC_S, CMD_A, KC_NO, KC_NO, TAPPING_TERM};
     vial_tap_dance_entry_t td3 = {KC_Z, CMD_Z, KC_NO, KC_NO, TAPPING_TERM};
     vial_tap_dance_entry_t td4 = {KC_X, CMD_X, KC_NO, KC_NO, TAPPING_TERM};
     vial_tap_dance_entry_t td5 = {KC_M, CMD_C, KC_NO, KC_NO, TAPPING_TERM};
     vial_tap_dance_entry_t td6 = {KC_D, CMD_V, KC_NO, KC_NO, TAPPING_TERM};
-
-    // add Apple Globe key
-    vial_tap_dance_entry_t td7 = {KC_TAB, KC_GLOBE, KC_NO, KC_NO, 150}; // hold=Globe, tap=TAB
+    // windows
+    vial_tap_dance_entry_t td8  = {KC_S, CTL_A, KC_NO, KC_NO, TAPPING_TERM};
+    vial_tap_dance_entry_t td9  = {KC_Z, CTL_Z, KC_NO, KC_NO, TAPPING_TERM};
+    vial_tap_dance_entry_t td10 = {KC_X, CTL_X, KC_NO, KC_NO, TAPPING_TERM};
+    vial_tap_dance_entry_t td11 = {KC_M, CTL_C, KC_NO, KC_NO, TAPPING_TERM};
+    vial_tap_dance_entry_t td12 = {KC_D, CTL_V, KC_NO, KC_NO, TAPPING_TERM};
 
     dynamic_keymap_set_tap_dance(0, &td0);
     dynamic_keymap_set_tap_dance(1, &td1);
-    dynamic_keymap_set_tap_dance(2, &td2);
-    dynamic_keymap_set_tap_dance(3, &td3);
-    dynamic_keymap_set_tap_dance(4, &td4);
-    dynamic_keymap_set_tap_dance(5, &td5);
-    dynamic_keymap_set_tap_dance(6, &td6);
-    dynamic_keymap_set_tap_dance(7, &td7);
+    dynamic_keymap_set_tap_dance(2, &td7);
+    dynamic_keymap_set_tap_dance(3, &td2);
+    dynamic_keymap_set_tap_dance(4, &td3);
+    dynamic_keymap_set_tap_dance(5, &td4);
+    dynamic_keymap_set_tap_dance(6, &td5);
+    dynamic_keymap_set_tap_dance(7, &td6);
+    dynamic_keymap_set_tap_dance(8, &td8);
+    dynamic_keymap_set_tap_dance(9, &td9);
+    dynamic_keymap_set_tap_dance(10, &td10);
+    dynamic_keymap_set_tap_dance(11, &td11);
+    dynamic_keymap_set_tap_dance(12, &td12);
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
@@ -99,33 +116,40 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 #endif
 
-    // Handle Cmd shortcuts for alt layouts
-    switch (keycode) {
-        case CMD_A:
-            if (!record->event.pressed) {
+    // Handle Cmd/Ctl shortcuts for alt layouts
+    if (!record->event.pressed) {
+        switch (keycode) {
+            case CMD_A:
                 SEND_STRING(SS_LCMD("a"));
-            }
-            return false;
-        case CMD_Z:
-            if (!record->event.pressed) {
+                return false;
+            case CMD_Z:
                 SEND_STRING(SS_LCMD("z"));
-            }
-            return false;
-        case CMD_X:
-            if (!record->event.pressed) {
+                return false;
+            case CMD_X:
                 SEND_STRING(SS_LCMD("x"));
-            }
-            return false;
-        case CMD_C:
-            if (!record->event.pressed) {
+                return false;
+            case CMD_C:
                 SEND_STRING(SS_LCMD("c"));
-            }
-            return false;
-        case CMD_V:
-            if (!record->event.pressed) {
+                return false;
+            case CMD_V:
                 SEND_STRING(SS_LCMD("v"));
-            }
-            return false;
+                return false;
+            case CTL_A:
+                SEND_STRING(SS_LCTL("a"));
+                return false;
+            case CTL_Z:
+                SEND_STRING(SS_LCTL("z"));
+                return false;
+            case CTL_X:
+                SEND_STRING(SS_LCTL("x"));
+                return false;
+            case CTL_C:
+                SEND_STRING(SS_LCTL("c"));
+                return false;
+            case CTL_V:
+                SEND_STRING(SS_LCTL("v"));
+                return false;
+        }
     }
 
     return true;
@@ -172,7 +196,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,_______,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______, LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -182,11 +206,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______ ,KC_V    ,KC_L    ,KC_H    ,KC_G    ,KC_K    ,_______ ,                          _______ ,KC_Q    ,KC_F 	,KC_O    ,KC_U    ,KC_J    ,KC_BSLS ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TAB  ,TD_S_CA ,KC_R    ,KC_N    ,KC_T    ,KC_B    ,_______ ,                          _______ ,KC_Y    ,KC_C 	,KC_A    ,KC_E    ,KC_I    ,KC_SLSH ,
+     KC_TAB  ,TD_S_CLA,KC_R    ,KC_N    ,KC_T    ,KC_B    ,_______ ,                          _______ ,KC_Y    ,KC_C 	,KC_A    ,KC_E    ,KC_I    ,KC_SLSH ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     TD_GUI_LP,TD_Z_CZ,TD_X_CX ,TD_M_CC ,TD_D_CV ,KC_P    ,_______ ,_______ ,        _______ ,_______ ,KC_QUOT ,KC_W 	,KC_DOT  ,KC_SCLN ,KC_COMM ,KC_RPRN ,
+     TD_GUI_LP,TD_Z_CLZ,TD_X_CLX,TD_M_CLC,TD_D_CLV,KC_P   ,_______ ,_______ ,        _______ ,_______ ,KC_QUOT ,KC_W 	,KC_DOT  ,KC_SCLN ,KC_COMM ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______, LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
