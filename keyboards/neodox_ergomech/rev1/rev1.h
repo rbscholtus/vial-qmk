@@ -1,9 +1,10 @@
 #pragma once
 
-#include "newdox.h"
+#include "../newdox.h"
 
 #include "quantum.h"
 
+// clang-format off
 #define LAYOUT( \
   k00, k01, k02, k03, k04, k05,                          k08, k09, k10, k11, k12, k13, \
   k14, k15, k16, k17, k18, k19, k06,                k07, k22, k23, k24, k25, k26, k27, \
@@ -23,3 +24,4 @@
     { k55, k54, k53, k52, k51, k50, k49 }, \
     { k69, k68, k67, k66, k65, k64, k63 }  \
 }
+// clang-format on
