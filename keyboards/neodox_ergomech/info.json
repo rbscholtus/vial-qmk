@@ -8,6 +8,8 @@
         "pid": "0x5244",
         "device_version": "0.0.1"
     },
+    "bootloader_instructions":"Hold the reset button next to the USB connector at the bottom of the PCB, plug in the USB cable while holding it, and release the button once the cable is connected.",
+    "tags": ["ortho", "split", "neodox"],
     "layouts": {
         "LAYOUT": {
             "layout": [
