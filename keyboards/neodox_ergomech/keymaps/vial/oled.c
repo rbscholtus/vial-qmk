@@ -40,7 +40,36 @@ static void render_logo(const char *logo) {
     oled_write_P(logo, false);
 }
 
-#    ifndef OCEAN_DREAM_ENABLE
+#    ifdef OCEAN_DREAM_ENABLE
+// clang-format off
+const char *layer_names[] = {
+    [_MQWE] = "Qwert  Mac",
+    [_MFOC] = "Focal  Mac",
+    [_WQWE] = "Qwert  Win",
+    [_WFOC] = "Focal  Win",
+    [_MNAV] = "Navig  Mac",
+    [_WNAV] = "Navig  Win",
+    [_SYMB] = "Symbl     ",
+    [_FUNC] = "F1-12     "
+};
+// clang-format on
+
+bool show_layout   = false;
+bool layout_erased = true;
+
+static void write_layout(void) {
+    if (show_layout) {
+        oled_set_cursor(0, 0);
+        oled_write(layer_names[get_highest_layer(layer_state)], false);
+        layout_erased = false;
+    } else if (!layout_erased) {
+        oled_set_cursor(0, 0);
+        oled_write_P(PSTR("          "), false);
+        layout_erased = true;
+    }
+}
+
+#    else
 static void render_os_logo(void) {
     switch (detected_host_os()) {
         case OS_MACOS:
@@ -212,6 +241,7 @@ bool oled_task_user(void) {
     } else {
 #    ifdef OCEAN_DREAM_ENABLE
         render_stars();
+        write_layout();
 #    else
         render_status(); // requires OS_DETECTION_ENABLE = yes
 #    endif
