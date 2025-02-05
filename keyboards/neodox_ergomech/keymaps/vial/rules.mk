@@ -8,9 +8,17 @@ ENCODER_ENABLE = yes
 ENCODER_MAP_ENABLE = yes
 WPM_ENABLE = yes
 OS_DETECTION_ENABLE = no
-OCEAN_DREAM_ENABLE = yes
+OCEAN_DREAM_ENABLE = no
+ERGOMECH_ANIMATION_ENABLE = yes
 PERMISSIVE_HOLD = yes  # does not work on Vial UI
-KEYBOARD_SHARED_EP = yes
+KEYBOARD_SHARED_EP = yes  # for the Apple Globe modifier
+
+ifeq ($(strip $(OLED_ENABLE)), yes)
+	ifeq ($(strip $(ERGOMECH_ANIMATION_ENABLE)), yes)
+		SRC += ergomechstore_logo.c
+		OPT_DEFS += -DERGOMECH_ANIMATION_ENABLE
+    endif
+endif
 
 # https://github.com/snowe2010/qmk_firmware/blob/ocean-dream/users/snowe/readme_ocean_dream.md
 ifeq ($(strip $(OLED_ENABLE)), yes)

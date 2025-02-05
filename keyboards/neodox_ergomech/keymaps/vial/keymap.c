@@ -16,12 +16,16 @@
  */
 #include QMK_KEYBOARD_H
 
-#ifdef OCEAN_DREAM_ENABLE
-#    include "ocean_dream.h"
-#endif
-
 #include "keymap.h"
-#include "oled.c"
+
+#ifdef OLED_ENABLE
+#    ifdef ERGOMECH_ANIMATION_ENABLE
+#        include "ergomechstore_logo.h"
+#    endif
+#    ifdef OCEAN_DREAM_ENABLE
+#        include "ocean_dream.h"
+#    endif
+#endif
 
 // define custom macro key codes
 enum custom_keycodes {
@@ -44,12 +48,12 @@ enum custom_keycodes {
 };
 
 void install_combo_entries(void) {
-    vial_combo_entry_t cb0 = {{USER_01, USER_02, USER_03, USER_04}, QK_BOOTLOADER}; // shortcut to bootloader, lefthand side
-    vial_combo_entry_t cb1 = {{KC_LEFT, KC_DOWN, KC_UP, KC_RIGHT}, QK_BOOTLOADER};  // shortcut to bootloader, righthand side
-    vial_combo_entry_t cb2 = {{USER_00, KC_1, KC_NO, KC_NO}, TO(0)};                // shortcut to go to layer 0
-    vial_combo_entry_t cb3 = {{USER_00, KC_2, KC_NO, KC_NO}, TO(1)};                // shortcut to go to layer 1
-    vial_combo_entry_t cb4 = {{USER_00, KC_3, KC_NO, KC_NO}, TO(2)};                // shortcut to go to layer 2
-    vial_combo_entry_t cb5 = {{USER_00, KC_4, KC_NO, KC_NO}, TO(3)};                // shortcut to go to layer 3
+    vial_combo_entry_t cb0 = {{USER_01, USER_02, USER_03, KC_NO}, QK_BOOTLOADER}; // shortcut to bootloader, lefthand side
+    vial_combo_entry_t cb1 = {{KC_NO, KC_DOWN, KC_UP, KC_RIGHT}, QK_BOOTLOADER};  // shortcut to bootloader, righthand side
+    vial_combo_entry_t cb2 = {{USER_00, KC_1, KC_NO, KC_NO}, TO(0)};              // shortcut to go to layer 0
+    vial_combo_entry_t cb3 = {{USER_00, KC_2, KC_NO, KC_NO}, TO(1)};              // shortcut to go to layer 1
+    vial_combo_entry_t cb4 = {{USER_00, KC_3, KC_NO, KC_NO}, TO(2)};              // shortcut to go to layer 2
+    vial_combo_entry_t cb5 = {{USER_00, KC_4, KC_NO, KC_NO}, TO(3)};              // shortcut to go to layer 3
 
     dynamic_keymap_set_combo(0, &cb0);
     dynamic_keymap_set_combo(1, &cb1);
@@ -168,7 +172,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_CTL_LP,KC_Z   ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     USER_01 ,USER_02 ,USER_03 ,USER_04 ,   MT_ALT_ENT,  MT_SHT_BSP,MT_GUI_DEL,      LT_SYM_MIN,LT_MNA_SPC,LT_FN_EQL    ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT
+     USER_01 ,USER_02 ,USER_03 ,USER_04 ,   MT_ALT_ENT,  MT_GUI_DEL,MT_SHT_BSP,      LT_MNA_SPC,LT_SYM_MIN,LT_FN_EQL    ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -196,7 +200,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,_______,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     _______ ,    MT_CTL_DEL,_______,       LT_WNA_SPC,_______,   _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -210,7 +214,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,TD_Z_CLZ,TD_X_CLX,TD_M_CLC,TD_D_CLV,KC_P   ,_______ ,_______ ,        _______ ,_______ ,KC_QUOT ,KC_W 	,KC_DOT  ,KC_SCLN ,KC_COMM ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    _______ ,MT_CTL_DEL,      _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     _______ ,    MT_CTL_DEL,_______,       LT_WNA_SPC,_______,   _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -246,11 +250,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                                           ┌────────┬────────┬────────┬────────┬────────┬────────┐
      KC_F1   ,KC_F2   ,KC_F3   ,KC_F4   ,KC_F5   , KC_F6  ,                                            KC_F7   ,KC_F8   ,KC_F9   ,KC_F10  ,KC_F11  ,KC_F12  ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐                         ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_GRV  ,KC_EXLM ,KC_AT   ,KC_HASH ,KC_DLR  ,KC_PERC ,_______ ,                          XXXXXXX ,KC_DOT  ,KC_1    ,KC_2    ,KC_3    ,KC_PLUS ,XXXXXXX,
+     KC_GRV  ,KC_EXLM ,KC_AT   ,KC_HASH ,KC_DLR  ,KC_PERC ,_______ ,                          XXXXXXX ,KC_DOT  ,KC_1    ,KC_2    ,KC_3    ,KC_PLUS ,KC_PERC ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┤                         ├────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     KC_TILD ,KC_CIRC ,KC_AMPR ,KC_LBRC ,KC_LPRN ,KC_LCBR ,XXXXXXX ,                          XXXXXXX ,KC_0    ,KC_4    ,KC_5    ,KC_6    ,KC_MINUS,KC_ASTR ,
+     KC_TILD ,KC_CIRC ,KC_PIPE ,KC_AMPR ,KC_LCBR ,KC_LBRC ,XXXXXXX ,                          XXXXXXX ,KC_0    ,KC_4    ,KC_5    ,KC_6    ,KC_MINUS,KC_ASTR ,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
-     _______ ,XXXXXXX ,KC_PIPE ,KC_RBRC ,KC_RPRN ,KC_RCBR ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_EQL  ,KC_7    ,KC_8    ,KC_9    ,KC_SLSH ,XXXXXXX ,
+     _______ ,XXXXXXX ,XXXXXXX ,XXXXXXX ,KC_RCBR ,KC_RBRC ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_COMMA,KC_7    ,KC_8    ,KC_9    ,KC_SLSH ,XXXXXXX ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
      XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX ,     _______ ,    _______ ,_______ ,        _______ ,_______ ,    _______ ,     XXXXXXX ,XXXXXXX ,XXXXXXX ,XXXXXXX
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
@@ -304,6 +308,49 @@ void keyboard_post_init_user(void) {
     install_combo_entries();
     install_tap_dance_entries();
 };
+
+#ifdef OLED_ENABLE
+
+/* The standard QMK logo */
+
+// clang-format off
+const char qmk_logo[] PROGMEM = {
+    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 0x90, 0x91, 0x92, 0x93, 0x94,
+    0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 0xb3, 0xb4,
+    0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0
+};
+// clang-format on
+
+static void render_logo(const char *logo) {
+    oled_write_P(logo, false);
+}
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    if (is_keyboard_master()) {
+#    ifdef ERGOMECH_ANIMATION_ENABLE
+        return OLED_ROTATION_270;
+#    else
+        return OLED_ROTATION_180;
+#    endif
+    } else {
+        return OLED_ROTATION_180;
+    }
+}
+
+bool oled_task_user(void) {
+    if (is_keyboard_master()) {
+#    ifdef ERGOMECH_ANIMATION_ENABLE
+        render_ergo_logo();
+#    else
+        render_logo(qmk_logo);
+#    endif
+    } else {
+        render_logo(qmk_logo);
+    }
+    return true;
+}
+
+#endif
 
 #if defined(ENCODER_MAP_ENABLE)
 
