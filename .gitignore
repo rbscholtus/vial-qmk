@@ -116,3 +116,12 @@ user_song_list.h
 compile_commands.json
 .clangd/
 .cache/
+
+keyboards/neodox_ergomech/keymaps/vial/info-barend.json
+keyboards/neodox_ergomech/keymaps/vial_old/config.h
+keyboards/neodox_ergomech/keymaps/vial_old/encoder.c
+keyboards/neodox_ergomech/keymaps/vial_old/keymap.c
+keyboards/neodox_ergomech/keymaps/vial_old/oled.c
+keyboards/neodox_ergomech/keymaps/vial_old/readme.md
+keyboards/neodox_ergomech/keymaps/vial_old/rules.mk
+keyboards/neodox_ergomech/keymaps/vial_old/vial.json
