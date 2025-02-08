@@ -101,6 +101,5 @@ extern bool is_calm;
 
 // timers
 extern uint32_t starry_night_anim_timer;
-extern uint32_t starry_night_anim_sleep;
 
 void render_stars(void);
