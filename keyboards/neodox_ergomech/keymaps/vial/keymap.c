@@ -225,11 +225,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
 #    endif
 
-    // switch (keycode) {
-    //     case USER_00:
-    //         show_layout = (record->event.pressed) ? true : false;
-    //         break;
-    // }
     return true;
 };
 
