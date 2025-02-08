@@ -15,9 +15,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include QMK_KEYBOARD_H
+
 #include "ocean_dream.h"
-#include "quantum.h"
-#include "print.h"
 
 // Calculated Parameters
 #define TWINKLE_PROBABILITY_MODULATOR 100 / TWINKLE_PROBABILITY                            // CALCULATED: Don't Touch
@@ -29,7 +29,6 @@
 uint8_t    animation_counter       = 0; // global animation counter.
 bool       is_calm                 = false;
 uint32_t   starry_night_anim_timer = 0;
-uint32_t   starry_night_anim_sleep = 0;
 static int current_wpm             = 0;
 
 static uint8_t increment_counter(uint8_t counter, uint8_t max) {
@@ -502,7 +501,7 @@ static void animate_shooting_stars(void) {
  * Calls all different animations at different rates
  */
 void render_stars(void) {
-    //    // animation timer
+    // animation timer
     if (timer_elapsed32(starry_night_anim_timer) > STARRY_NIGHT_ANIM_FRAME_DURATION) {
         starry_night_anim_timer = timer_read32();
         current_wpm             = get_current_wpm();
@@ -543,13 +542,5 @@ void render_stars(void) {
 #endif
 
         animation_counter = increment_counter(animation_counter, NUMBER_OF_FRAMES);
-    }
-
-    // this fixes the screen on and off bug
-    if (current_wpm > 1) {
-        oled_on();
-        starry_night_anim_sleep = timer_read32();
-    } else if (timer_elapsed32(starry_night_anim_sleep) > OLED_TIMEOUT) {
-        oled_off();
     }
 }

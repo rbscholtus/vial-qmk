@@ -16,45 +16,48 @@
 
 #include QMK_KEYBOARD_H
 
-#include "ergomechstore_logo.h"
+#include "ergomechstore_ani.h"
 
-static uint16_t ergo_last_update = 0; // track last update time
-static uint16_t scroll_pos       = 0; // scrolling position, 0 on the left of the image
+// track last update time
+static uint16_t ergo_last_update = 0;
+
+// scrolling position, 0 on the left of the image
+static uint16_t scroll_pos = EMS_IMAGE_WIDTH % (EMS_IMAGE_WIDTH + EMS_BLANK_WIDTH);
 
 void render_ergo_logo(void) {
-    if (timer_elapsed(ergo_last_update) < FRAME_DELAY_MS) {
+    if (timer_elapsed(ergo_last_update) < EMS_FRAME_DELAY_MS) {
         return; // skip update if not enough time has passed
     }
     ergo_last_update = timer_read(); // reset timer
 
-    char render_row[SCREEN_WIDTH];
-    for (uint8_t r = 0; r < SCREEN_ROWS; r++) {
+    char render_row[EMS_SCREEN_WIDTH];
+    for (uint8_t r = 0; r < EMS_SCREEN_ROWS; r++) {
         oled_set_cursor(0, r);
-        for (uint8_t c = 0; c < SCREEN_WIDTH; c++) {
-            uint16_t offset = (scroll_pos + c) % (IMAGE_WIDTH + BLANK_WIDTH);
-            render_row[c]   = offset >= IMAGE_WIDTH ? BLANK_COLOR : pgm_read_byte(emstore_logo + r * IMAGE_WIDTH + offset);
+        for (uint8_t c = 0; c < EMS_SCREEN_WIDTH; c++) {
+            uint16_t offset = (scroll_pos + c) % (EMS_IMAGE_WIDTH + EMS_BLANK_WIDTH);
+            render_row[c]   = offset >= EMS_IMAGE_WIDTH ? EMS_BLANK_COLOR : pgm_read_byte(emstore_logo + r * EMS_IMAGE_WIDTH + offset);
         };
-        oled_write_raw(render_row, SCREEN_WIDTH);
+        oled_write_raw(render_row, EMS_SCREEN_WIDTH);
     }
 
     uint8_t wpm = get_current_wpm();
-    scroll_pos  = (scroll_pos + IDLE_SPEED + wpm / WPM_SPEED_DIV) % (IMAGE_WIDTH + BLANK_WIDTH);
+    scroll_pos  = (scroll_pos + EMS_IDLE_SPEED + wpm / EMS_WPM_SPEED_DIV) % (EMS_IMAGE_WIDTH + EMS_BLANK_WIDTH);
 
-#ifdef WPM_POS_ROW
-#    ifdef WPM_TITLE
-    oled_set_cursor(0, WPM_POS_ROW);
-    oled_write_P(PSTR(WPM_TITLE), WPM_INVERSE);
-    oled_set_cursor(WPM_POS_COL, WPM_POS_ROW + 1);
-    oled_write(get_u8_str(wpm, WPM_PAD_CHAR), WPM_INVERSE);
+#ifdef EMS_WPM_POS_ROW
+#    ifdef EMS_WPM_TITLE
+    oled_set_cursor(0, EMS_WPM_POS_ROW);
+    oled_write_P(PSTR(EMS_WPM_TITLE), EMS_WPM_INVERSE);
+    oled_set_cursor(EMS_WPM_POS_COL, EMS_WPM_POS_ROW + 1);
+    oled_write(get_u8_str(wpm, EMS_WPM_PAD_CHAR), EMS_WPM_INVERSE);
 #    else
-    oled_set_cursor(WPM_POS_COL, WPM_POS_ROW);
-    oled_write(get_u8_str(wpm, WPM_PAD_CHAR), WPM_INVERSE);
+    oled_set_cursor(EMS_WPM_POS_COL, EMS_WPM_POS_ROW);
+    oled_write(get_u8_str(wpm, EMS_WPM_PAD_CHAR), EMS_WPM_INVERSE);
 #    endif
 #endif
 }
 
 // clang-format off
-const unsigned char emstore_logo [] PROGMEM = {
+const char emstore_logo[] PROGMEM = {
 	// 'logo bw5, 145x128px
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,

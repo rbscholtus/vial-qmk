@@ -1,5 +1,4 @@
-/* Copyright HarshitGoel96 2020
- * With permission from mattdibi, the original maintainer of the Redox hardware.
+/* Copyright Barend Scholtus 2025
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +13,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include QMK_KEYBOARD_H
 
 #include "keymap.h"
 
 #ifdef OLED_ENABLE
+
+#    ifdef WPM_CHART_ENABLE
+#        include "wpm_chart.h"
+#    endif
 #    ifdef ERGOMECH_ANIMATION_ENABLE
-#        include "ergomechstore_logo.h"
+#        include "ergomechstore_ani.h"
+#    endif
+#    ifdef SPACE_WPM_ENABLE
+#        include "space_wpm.h"
 #    endif
 #    ifdef OCEAN_DREAM_ENABLE
 #        include "ocean_dream.h"
 #    endif
+#    ifdef LUNA_ENABLE
+#        include "luna.h"
+#    endif
+#    ifdef SUPERLOOP_ENABLE
+#        include "superloop.h"
+#    endif
+
+enum animation { ANI_LUNA, ANI_WPM_GRAPH, ANI_ERGOMECH, ANI_OCEAN_DREAM, ANI_SPACE, ANI_SUPERLOOP, ANI_LAST };
+
+static int8_t selected_animation = ANI_LUNA;
 #endif
 
 // define custom macro key codes
@@ -44,7 +61,11 @@ enum custom_keycodes {
     CTL_X,
     CTL_C,
     CTL_V,
-    KC_GLOBE
+    KC_GLOBE,
+    ANI_0,
+    ANI_1,
+    ANI_2,
+    ANI_3
 };
 
 void install_combo_entries(void) {
@@ -107,19 +128,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
     }
 
-#ifdef OCEAN_DREAM_ENABLE
-    // Handle Ocean Dream animation
-    switch (keycode) {
-        case KC_LCTL:
-        case KC_RCTL:
-            is_calm = (record->event.pressed) ? true : false;
-            break;
-        case USER_00:
-            show_layout = (record->event.pressed) ? true : false;
-            break;
-    }
-#endif
-
     // Handle Cmd/Ctl shortcuts for alt layouts
     if (!record->event.pressed) {
         switch (keycode) {
@@ -156,8 +164,98 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
     }
 
+#ifdef OLED_ENABLE
+    // wait for release of animation cycle buttons
+    if (!record->event.pressed) {
+        switch (keycode) {
+            case ANI_0:
+                selected_animation = (selected_animation + 1) % ANI_LAST;
+                if (selected_animation == ANI_WPM_GRAPH) wpm_reset();
+                oled_init(OLED_ROTATION_0);
+                break;
+            case ANI_1:
+                selected_animation = (selected_animation - 1 + ANI_LAST) % ANI_LAST;
+                if (selected_animation == ANI_WPM_GRAPH) wpm_reset();
+                oled_init(OLED_ROTATION_0);
+                break;
+        }
+    }
+
+#    ifdef OCEAN_DREAM_ENABLE
+    // Handle Ocean Dream animation
+    switch (keycode) {
+        case KC_LCTL:
+        case KC_RCTL:
+        case KC_LGUI:
+        case KC_RGUI:
+        case TD_CTL_LP:
+        case MT_CTL_DEL:
+        case TD_GUI_LP:
+        case MT_GUI_DEL:
+            is_calm = (record->event.pressed) ? true : false;
+            break;
+    }
+#    endif
+
+#    ifdef LUNA_ENABLE
+    switch (keycode) {
+        case KC_LSFT:
+        case KC_RSFT:
+        case MT_SHT_BSP:
+            isSneaking = record->event.pressed;
+            break;
+        case KC_LCTL:
+        case KC_RCTL:
+        case KC_LGUI:
+        case KC_RGUI:
+        case TD_CTL_LP:
+        case MT_CTL_DEL:
+        case TD_GUI_LP:
+        case MT_GUI_DEL:
+            isBarking = record->event.pressed;
+            break;
+        case LT_MNA_SPC:
+        case LT_WNA_SPC:
+        case KC_SPC:
+            isJumping = record->event.pressed;
+            if (record->event.pressed) {
+                showedJump = false;
+            }
+            break;
+    }
+#    endif
+
+    // switch (keycode) {
+    //     case USER_00:
+    //         show_layout = (record->event.pressed) ? true : false;
+    //         break;
+    // }
     return true;
 };
+
+// clang-format off
+const char *layer_names[] = {
+    [_MQWE] = "Qwrty",
+    [_MFOC] = "Focal",
+    [_WQWE] = "Qwrty",
+    [_WFOC] = "Focal",
+    [_MNAV] = "Navig",
+    [_WNAV] = "Navig",
+    [_SYMB] = "Symbl",
+    [_FUNC] = "F1-12"
+};
+
+const uint8_t layer_oses[] = {
+    [_MQWE] = OS_MACOS,
+    [_MFOC] = OS_MACOS,
+    [_WQWE] = OS_WINDOWS,
+    [_WFOC] = OS_WINDOWS,
+    [_MNAV] = OS_MACOS,
+    [_WNAV] = OS_WINDOWS,
+    [_SYMB] = OS_UNSURE,
+    [_FUNC] = OS_UNSURE
+};
+// clang-format on
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -172,7 +270,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_CTL_LP,KC_Z   ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     USER_01 ,USER_02 ,USER_03 ,USER_04 ,   MT_ALT_ENT,  MT_GUI_DEL,MT_SHT_BSP,      LT_MNA_SPC,LT_SYM_MIN,LT_FN_EQL    ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT
+     USER_01 ,USER_02 ,USER_03 ,MT_ALT_ENT, MT_GUI_DEL,MT_SHT_BSP,MT_ALT_ENT,        LT_FN_EQL,LT_MNA_SPC,LT_SYM_MIN    ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -309,41 +407,73 @@ void keyboard_post_init_user(void) {
     install_tap_dance_entries();
 };
 
-#ifdef OLED_ENABLE
-
-/* The standard QMK logo */
-
-// clang-format off
-const char qmk_logo[] PROGMEM = {
-    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 0x90, 0x91, 0x92, 0x93, 0x94,
-    0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 0xb3, 0xb4,
-    0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0
-};
-// clang-format on
-
+// basic logo drawing stuff
 static void render_logo(const char *logo) {
     oled_write_P(logo, false);
 }
 
+// clang-format off
+// static const char PROGMEM mac_logo[] = {0x95, 0x96, 0x0d, 0xb5, 0xb6, 0x0d, 0};
+// static const char PROGMEM win_logo[] = {0x97, 0x98, 0x0d, 0xb7, 0xb8, 0x0d, 0};
+// static const char PROGMEM tux_logo[] = {0x99, 0x9a, 0x0d, 0xb9, 0xba, 0x0d, 0};
+// static const char PROGMEM wtf_logo[] = {0x9d, 0x9e, 0x0d, 0xbd, 0xbe, 0x0d, 0};
+
+/* The standard QMK logo */
+static const char PROGMEM qmk_logo[] = {
+    0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x8a, 0x8b, 0x8c, 0x8d, 0x8e, 0x8f, 0x90, 0x91, 0x92, 0x93, 0x94,
+    0xa0, 0xa1, 0xa2, 0xa3, 0xa4, 0xa5, 0xa6, 0xa7, 0xa8, 0xa9, 0xaa, 0xab, 0xac, 0xad, 0xae, 0xaf, 0xb0, 0xb1, 0xb2, 0xb3, 0xb4,
+    0xc0, 0xc1, 0xc2, 0xc3, 0xc4, 0xc5, 0xc6, 0xc7, 0xc8, 0xc9, 0xca, 0xcb, 0xcc, 0xcd, 0xce, 0xcf, 0xd0, 0xd1, 0xd2, 0xd3, 0xd4, 0
+ };
+// clang-format on
+
 oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     if (is_keyboard_master()) {
-#    ifdef ERGOMECH_ANIMATION_ENABLE
-        return OLED_ROTATION_270;
-#    else
-        return OLED_ROTATION_180;
-#    endif
+        switch (selected_animation) {
+            case ANI_LUNA:
+            case ANI_WPM_GRAPH:
+            case ANI_ERGOMECH:
+            case ANI_OCEAN_DREAM:
+            case ANI_SUPERLOOP:
+                return OLED_ROTATION_270;
+            case ANI_SPACE:
+                return OLED_ROTATION_0;
+            default:
+                return rotation;
+        }
     } else {
         return OLED_ROTATION_180;
     }
 }
 
 bool oled_task_user(void) {
+    if (last_input_activity_elapsed() > OLED_TIMEOUT) {
+        oled_off();
+        return false;
+    }
+
     if (is_keyboard_master()) {
-#    ifdef ERGOMECH_ANIMATION_ENABLE
-        render_ergo_logo();
-#    else
-        render_logo(qmk_logo);
-#    endif
+        switch (selected_animation) {
+            case ANI_LUNA:
+                print_status_luna();
+                break;
+            case ANI_WPM_GRAPH:
+                render_wpm_chart();
+                break;
+            case ANI_ERGOMECH:
+                render_ergo_logo();
+                break;
+            case ANI_OCEAN_DREAM:
+                render_stars();
+                break;
+            case ANI_SPACE:
+                render_space();
+                break;
+            case ANI_SUPERLOOP:
+                render_superloop();
+                break;
+            default:
+                render_logo(qmk_logo);
+        }
     } else {
         render_logo(qmk_logo);
     }
@@ -356,7 +486,7 @@ bool oled_task_user(void) {
 
 // clang-format off
 const uint16_t PROGMEM encoder_map[][2][2] = {
-    [_MQWE] = { ENCODER_CCW_CW(XXXXXXX, XXXXXXX),      ENCODER_CCW_CW(KC_VOLU, KC_VOLD)  },
+    [_MQWE] = { ENCODER_CCW_CW(ANI_0, ANI_1),          ENCODER_CCW_CW(KC_VOLU, KC_VOLD)  },
     [_MFOC] = { ENCODER_CCW_CW(_______, _______),      ENCODER_CCW_CW(_______, _______)  },
     [_WQWE] = { ENCODER_CCW_CW(_______, _______),      ENCODER_CCW_CW(_______, _______)  },
     [_WFOC] = { ENCODER_CCW_CW(_______, _______),      ENCODER_CCW_CW(_______, _______)  },

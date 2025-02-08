@@ -17,6 +17,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #pragma once
 
+// clang-format off
+
 /* Use I2C or Serial, not both */
 #define USE_SERIAL
 // #define USE_I2C
@@ -36,17 +38,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // tapping settings don't work on the Vial UI
 #define TAPPING_TERM 200
 #define PERMISSIVE_HOLD
-#define QUICK_TAP_TERM 100
-#define HOLD_ON_OTHER_KEY_PRESS
+#undef HOLD_ON_OTHER_KEY_PRESS
+#define QUICK_TAP_TERM 0
 
 // for the displays. oled_timeout is needed for Ocean dream to prevent screen off/on bug
-#define OLED_FADE_OUT
-#define OLED_FADE_OUT_INTERVAL 10
-#define OLED_TIMEOUT 60000
+// #define OLED_FADE_OUT
+// #define OLED_FADE_OUT_INTERVAL 10
+#ifndef OLED_TIMEOUT
+#define OLED_TIMEOUT 60000       // Turns off the OLED screen after x ms of screen update inactivity. Helps reduce OLED Burn-in. Set to 0 to disable.
+#endif
 
 // https://docs.qmk.fm/features/oled_driver#logo-example
 #define OLED_FONT_H "font.c"
 
 // https://docs.qmk.fm/features/wpm
 // #define WPM_SAMPLE_SECONDS 10
-#define WPM_LAUNCH_CONTROL 1
+// #define WPM_LAUNCH_CONTROL 1
+
+// #define SPLIT_LAYER_STATE_ENABLE
+// #define SPLIT_WPM_ENABLE

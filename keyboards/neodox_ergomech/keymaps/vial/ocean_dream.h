@@ -15,8 +15,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// https: // github.com/snowe2010/qmk_firmware/blob/ocean-dream/users/snowe/readme_ocean_dream.md
+
 #pragma once
-#include "quantum.h"
+
+#include QMK_KEYBOARD_H
 
 /**
  * Features:
