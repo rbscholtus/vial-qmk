@@ -70,7 +70,7 @@ enum custom_keycodes {
 
 void install_combo_entries(void) {
     vial_combo_entry_t cb0 = {{USER_01, USER_02, USER_03, KC_NO}, QK_BOOTLOADER}; // shortcut to bootloader, lefthand side
-    vial_combo_entry_t cb1 = {{KC_NO, KC_DOWN, KC_UP, KC_RIGHT}, QK_BOOTLOADER};  // shortcut to bootloader, righthand side
+    vial_combo_entry_t cb1 = {{KC_DOWN, KC_UP, KC_RIGHT, KC_NO}, QK_BOOTLOADER};  // shortcut to bootloader, righthand side
     vial_combo_entry_t cb2 = {{USER_00, KC_1, KC_NO, KC_NO}, TO(0)};              // shortcut to go to layer 0
     vial_combo_entry_t cb3 = {{USER_00, KC_2, KC_NO, KC_NO}, TO(1)};              // shortcut to go to layer 1
     vial_combo_entry_t cb4 = {{USER_00, KC_3, KC_NO, KC_NO}, TO(2)};              // shortcut to go to layer 2
@@ -265,7 +265,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_CTL_LP,KC_Z   ,KC_X    ,KC_C    ,KC_V    ,KC_B    ,KC_LPRN ,KC_RPRN ,        KC_LBRC ,KC_RBRC ,KC_N    ,KC_M    ,KC_COMM ,KC_DOT  ,KC_SLSH ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     USER_01 ,USER_02 ,USER_03 ,MT_ALT_ENT, MT_GUI_DEL,MT_SHT_BSP,MT_ALT_ENT,        LT_FN_EQL,LT_MNA_SPC,LT_SYM_MIN    ,KC_LEFT ,KC_DOWN ,KC_UP   ,KC_RGHT
+     USER_01 ,USER_02 ,USER_03 ,MT_ALT_ENT, MT_GUI_DEL,MT_SHT_BSP,MT_ALT_ENT,        LT_FN_EQL,LT_MNA_SPC,LT_SYM_MIN    ,LT_FN_EQL,KC_DOWN ,KC_UP   ,KC_RGHT
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -293,7 +293,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,_______,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,        _______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,_______ ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    MT_CTL_DEL,_______,       LT_WNA_SPC,_______,   _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     MT_CTL_DEL,  _______ , _______,        _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -307,7 +307,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┐       ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      TD_GUI_LP,TD_Z_CLZ,TD_X_CLX,TD_M_CLC,TD_D_CLV,KC_P   ,_______ ,_______ ,        _______ ,_______ ,KC_QUOT ,KC_W 	,KC_DOT  ,KC_SCLN ,KC_COMM ,KC_RPRN ,
   //├────────┼────────┼────────┼────────┼────┬───┴────┬───┼────────┼────────┤       ├────────┼────────┼───┬────┴───┬────┼────────┼────────┼────────┼────────┤
-     _______ ,_______ ,_______ ,_______ ,     _______ ,    MT_CTL_DEL,_______,       LT_WNA_SPC,_______,   _______ ,     _______ ,_______ ,_______ ,_______
+     _______ ,_______ ,_______ ,_______ ,     MT_CTL_DEL  ,_______ , _______,        _______ ,LT_WNA_SPC,  _______ ,     _______ ,_______ ,_______ ,_______
   //└────────┴────────┴────────┴────────┘    └────────┘   └────────┴────────┘       └────────┴────────┘   └────────┘    └────────┴────────┴────────┴────────┘
   ),
 
@@ -408,10 +408,6 @@ static void render_logo(const char *logo) {
 }
 
 // clang-format off
-// static const char PROGMEM mac_logo[] = {0x95, 0x96, 0x0d, 0xb5, 0xb6, 0x0d, 0};
-// static const char PROGMEM win_logo[] = {0x97, 0x98, 0x0d, 0xb7, 0xb8, 0x0d, 0};
-// static const char PROGMEM tux_logo[] = {0x99, 0x9a, 0x0d, 0xb9, 0xba, 0x0d, 0};
-// static const char PROGMEM wtf_logo[] = {0x9d, 0x9e, 0x0d, 0xbd, 0xbe, 0x0d, 0};
 
 /* The standard QMK logo */
 static const char PROGMEM qmk_logo[] = {
